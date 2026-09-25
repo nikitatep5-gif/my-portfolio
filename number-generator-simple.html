@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A fast, simple random number generator.">
+  <title>Pick One | Random Number Generator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+    :root {
+      --ink: #17211b;
+      --muted: #69766d;
+      --paper: #f4f1e8;
+      --card: #fffdf7;
+      --line: #d8ddd3;
+      --lime: #c5ef67;
+      --orange: #ff8d5c;
+      --shadow: 0 18px 50px rgba(23, 33, 27, 0.11);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: 'Space Grotesk', 'Trebuchet MS', sans-serif;
+    }
+
+    body::before {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      content: '';
+      opacity: .65;
+      background-image: linear-gradient(rgba(23, 33, 27, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(23, 33, 27, .035) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to bottom, black, transparent 80%);
+    }
+
+    .site-header, main { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 30px 0;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; letter-spacing: -.03em; }
+    .brand-mark { display: grid; width: 30px; height: 30px; place-items: center; color: var(--ink); border: 2px solid var(--ink); border-radius: 50%; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; }
+    .header-note { color: var(--muted); font-size: 13px; }
+
+    main { padding: 46px 0 70px; }
+    .intro { max-width: 680px; animation: rise .6s ease-out both; }
+    .eyebrow { margin: 0 0 14px; color: #657b35; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { max-width: 650px; margin: 0; font-size: clamp(48px, 8vw, 92px); line-height: .92; letter-spacing: -.075em; }
+    .intro p { max-width: 430px; margin: 24px 0 0; color: var(--muted); font-size: 17px; line-height: 1.5; }
+
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr); gap: 22px; margin-top: 52px; }
+    .panel { border: 1px solid var(--line); border-radius: 8px; background: var(--card); box-shadow: var(--shadow); }
+    .generator { padding: 28px; animation: rise .7s .1s ease-out both; }
+    .panel-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .status { display: flex; align-items: center; gap: 7px; color: #657b35; }
+    .status::before { width: 7px; height: 7px; border-radius: 50%; background: #8abb31; content: ''; }
+
+    .result { display: flex; min-height: 196px; align-items: center; justify-content: center; margin-bottom: 26px; overflow: hidden; border-radius: 6px; background: var(--lime); }
+    #result { color: var(--ink); font-family: 'DM Mono', monospace; font-size: clamp(64px, 11vw, 120px); font-weight: 500; letter-spacing: -.1em; line-height: 1; }
+    #result.placeholder { color: rgba(23, 33, 27, .3); }
+    .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { display: grid; gap: 8px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; text-transform: uppercase; }
+    input { width: 100%; border: 1px solid var(--line); border-radius: 5px; padding: 13px 14px; color: var(--ink); background: #f8f8f1; font: 500 18px 'DM Mono', monospace; outline: none; }
+    input:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(197, 239, 103, .45); }
+    .actions { display: flex; gap: 10px; margin-top: 20px; }
+    button { border: 0; border-radius: 5px; padding: 14px 18px; color: var(--ink); background: var(--ink); font: 600 15px 'Space Grotesk', sans-serif; cursor: pointer; transition: transform .15s ease, background .15s ease; }
+    button:hover { transform: translateY(-2px); background: #344539; }
+    button:active { transform: translateY(0); }
+    button.secondary { border: 1px solid var(--line); color: var(--ink); background: transparent; }
+    button.secondary:hover { background: #f0efe7; }
+    .error { min-height: 20px; margin: 12px 0 0; color: #c2512d; font-size: 13px; }
+
+    .history { padding: 24px; animation: rise .7s .2s ease-out both; }
+    .history h2 { margin: 0 0 20px; font-size: 18px; letter-spacing: -.04em; }
+    #history-list { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; margin: 0; padding: 0; list-style: none; }
+    #history-list li { padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: #f8f8f1; font: 14px 'DM Mono', monospace; }
+    .empty { color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .presets-title { width: 100%; margin-bottom: 2px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; text-transform: uppercase; }
+    .preset { padding: 8px 10px; font-size: 12px; }
+    .footer { margin-top: 26px; color: var(--muted); font: 11px 'DM Mono', monospace; }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 720px) {
+      .site-header, main { width: min(100% - 28px, 540px); }
+      .site-header { padding: 20px 0; }
+      .header-note { display: none; }
+      main { padding-top: 40px; }
+      .workspace { grid-template-columns: 1fr; margin-top: 38px; }
+      .generator { padding: 18px; }
+      .history { padding: 20px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand"><span class="brand-mark">?</span> Pick One</div>
+    <div class="header-note">A tiny decision-making machine</div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">Random number generator / 01</p>
+      <h1>Let chance<br>choose.</h1>
+      <p>Set the boundaries, then make a clean pick. Useful for games, decisions, drawings, and everything in between.</p>
+    </section>
+
+    <section class="workspace" aria-label="Number generator">
+      <div class="panel generator">
+        <div class="panel-label"><span>Generator</span><span class="status">Ready</span></div>
+        <div class="result" aria-live="polite"><span id="result" class="placeholder">—</span></div>
+        <div class="inputs">
+          <label for="min">Minimum<input type="number" id="min" value="1"></label>
+          <label for="max">Maximum<input type="number" id="max" value="100"></label>
+        </div>
+        <div class="actions">
+          <button id="generate" type="button">Generate number</button>
+          <button id="copy" class="secondary" type="button" title="Copy result" disabled>Copy</button>
+        </div>
+        <p id="error" class="error" role="alert"></p>
+        <div class="presets">
+          <span class="presets-title">Quick ranges</span>
+          <button class="preset secondary" type="button" data-min="1" data-max="6">Dice · 1–6</button>
+          <button class="preset secondary" type="button" data-min="1" data-max="10">Ten · 1–10</button>
+          <button class="preset secondary" type="button" data-min="1" data-max="100">Percent · 1–100</button>
+        </div>
+      </div>
+
+      <aside class="panel history">
+        <h2>Recent picks</h2>
+        <ul id="history-list"><li class="empty">Your generated numbers will appear here.</li></ul>
+        <p class="footer">Inclusive range · Every pick is independent</p>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const minInput = document.getElementById('min');
+    const maxInput = document.getElementById('max');
+    const result = document.getElementById('result');
+    const error = document.getElementById('error');
+    const copyButton = document.getElementById('copy');
+    const historyList = document.getElementById('history-list');
+    const history = [];
+
+    function generateNumber() {
+      const min = Number(minInput.value);
+      const max = Number(maxInput.value);
+
+      if (!Number.isInteger(min) || !Number.isInteger(max)) {
+        error.textContent = 'Enter whole numbers for both boundaries.';
+        return;
+      }
+      if (min > max) {
+        error.textContent = 'The minimum must be less than or equal to the maximum.';
+        return;
+      }
+
+      const number = Math.floor(Math.random() * (max - min + 1)) + min;
+      result.textContent = number;
+      result.classList.remove('placeholder');
+      copyButton.disabled = false;
+      error.textContent = '';
+      history.unshift(number);
+      history.splice(8);
+      historyList.innerHTML = history.map((item) => `<li>${item}</li>`).join('');
+    }
+
+    document.getElementById('generate').addEventListener('click', generateNumber);
+    [minInput, maxInput].forEach((input) => input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') generateNumber();
+    }));
+    document.querySelectorAll('.preset').forEach((button) => button.addEventListener('click', () => {
+      minInput.value = button.dataset.min;
+      maxInput.value = button.dataset.max;
+      generateNumber();
+    }));
+    copyButton.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(result.textContent);
+      copyButton.textContent = 'Copied';
+      setTimeout(() => { copyButton.textContent = 'Copy'; }, 1200);
+    });
+  </script>
+</body>
+</html>

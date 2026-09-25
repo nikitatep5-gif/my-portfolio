@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="100%" height="100%">
+  <defs>
+    <linearGradient id="arcadeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#180e29" />
+      <stop offset="100%" stop-color="#2a124a" />
+    </linearGradient>
+    <linearGradient id="neonPink" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f43f5e" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="360" rx="16" fill="url(#arcadeBg)" />
+
+  <!-- Equalizer waves -->
+  <g fill="url(#neonPink)" opacity="0.85">
+    <rect x="70" y="210" width="18" height="70" rx="4" />
+    <rect x="100" y="170" width="18" height="110" rx="4" />
+    <rect x="130" y="140" width="18" height="140" rx="4" />
+    <rect x="160" y="90" width="18" height="190" rx="4" />
+    <rect x="190" y="120" width="18" height="160" rx="4" />
+    <rect x="220" y="160" width="18" height="120" rx="4" />
+    <rect x="250" y="80" width="18" height="200" rx="4" fill="#38bdf8"/>
+    <rect x="280" y="110" width="18" height="170" rx="4" fill="#38bdf8"/>
+    <rect x="310" y="150" width="18" height="130" rx="4" fill="#38bdf8"/>
+    <rect x="340" y="70" width="18" height="210" rx="4" fill="#a855f7"/>
+    <rect x="370" y="120" width="18" height="160" rx="4" fill="#a855f7"/>
+    <rect x="400" y="170" width="18" height="110" rx="4" fill="#a855f7"/>
+    <rect x="430" y="130" width="18" height="150" rx="4" />
+    <rect x="460" y="180" width="18" height="100" rx="4" />
+    <rect x="490" y="220" width="18" height="60" rx="4" />
+  </g>
+
+  <!-- Arcade badge -->
+  <rect x="180" y="28" width="240" height="42" rx="21" fill="#0f071e" stroke="#ec4899" stroke-width="2"/>
+  <text x="300" y="55" font-family="'Courier New', monospace" font-size="16" font-weight="bold" fill="#ec4899" text-anchor="middle" letter-spacing="3">♫ 8-BIT AUDIO SYNTH</text>
+</svg>
